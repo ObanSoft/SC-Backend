@@ -1,12 +1,13 @@
 from flask import Flask
 from flask_cors import CORS
 from config import Config
-from models import db  
+from models import db
 from models.Venta import Venta
 
-
 app = Flask(__name__)
-CORS(app)
+
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+
 app.config.from_object(Config)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = (
@@ -17,8 +18,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
+# 👇 Blueprints
 from routers.auth.registro import usuarios_bp
-from routers.auth.login  import login_bp
+from routers.auth.login import login_bp
 from routers.productos.registrar_producto import registrar_bp
 from routers.productos.consultar_producto import consultar_bp
 from routers.productos.eliminar_producto import eliminar_bp
@@ -31,7 +33,7 @@ from routers.ventas.ventaIdentificador import venta_identificador_bp
 from routers.ventas.ventasProductos import ventas_por_nombre_bp
 from routers.ventas.margenVentas import margen_ventas_bp
 
-
+# 👇 Registro de rutas
 app.register_blueprint(usuarios_bp, url_prefix="/registro")
 app.register_blueprint(login_bp, url_prefix="/login")
 app.register_blueprint(registrar_bp, url_prefix="/productos")
@@ -46,8 +48,7 @@ app.register_blueprint(venta_identificador_bp, url_prefix="/ventas")
 app.register_blueprint(ventas_por_nombre_bp, url_prefix="/ventas")
 app.register_blueprint(margen_ventas_bp, url_prefix="/ventas")
 
-
 if __name__ == "__main__":
     with app.app_context():
-        db.create_all()  
+        db.create_all()
     app.run(debug=True)

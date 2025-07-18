@@ -1,14 +1,19 @@
 from flask import Blueprint, request, jsonify, current_app
 from werkzeug.security import check_password_hash
 from models.Usuario import db, Usuario
+from flask_cors import cross_origin
 import jwt
 import mysql.connector
 import datetime
 
 login_bp = Blueprint('login', __name__)
 
-@login_bp.route('/login', methods=['POST'])
+@login_bp.route('', methods=['POST', 'OPTIONS'], strict_slashes=False)
+@cross_origin(origin='http://localhost:3000', supports_credentials=True)
 def login():
+    if request.method == 'OPTIONS':
+        return '', 200
+
     data = request.get_json()
     numero_identificacion = data.get('numero_identificacion')
     contrasena = data.get('contrasena')
@@ -42,7 +47,7 @@ def login():
 
             return jsonify({"token": token}), 200
         else:
-            return jsonify({"error": "Credenciales incorrectas"}), 401
+            return jsonify({"error": "Crendenciales Invalidas"}), 401
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
