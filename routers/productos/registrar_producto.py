@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from models.Producto import db, Producto
 from sqlalchemy.exc import IntegrityError
 from utils.auth_utils import token_required
+from flask_cors import cross_origin
 import random
 import string
 
@@ -17,43 +18,51 @@ def generar_identificador():
     random.shuffle(lista)
     return ''.join(lista)
 
-@registrar_bp.route('/registrar_producto', methods=['POST'])
-@token_required
+@registrar_bp.route('/registrar_producto', methods=['POST', 'OPTIONS'], strict_slashes=False)
+@cross_origin(origin='http://localhost:3000', supports_credentials=True)
 def registrar_producto():
-    data = request.get_json()
-    nombre = data.get('nombre')
-    precio = data.get('precio')
-    cantidad = data.get('cantidad', 1)
+    if request.method == 'OPTIONS':
+        return '', 200
 
-    if not nombre or not precio or cantidad < 1:
-        return jsonify({'error': 'Datos incompletos o cantidad inválida'}), 400
+    from utils.auth_utils import token_required
+    @token_required
+    def handle_post():
+        data = request.get_json()
+        nombre = data.get('nombre')
+        precio = data.get('precio')
+        cantidad = data.get('cantidad', 1)
 
-    productos_creados = []
-    for _ in range(cantidad):
-        for _ in range(10):  
-            identificador = generar_identificador()
-            existe = Producto.query.filter_by(identificador_unico=identificador).first()
-            if not existe:
-                break
-        else:
-            return jsonify({'error': 'No se pudo generar un identificador único'}), 500
+        if not nombre or not precio or cantidad < 1:
+            return jsonify({'error': 'Datos incompletos o cantidad inválida'}), 400
 
-        nuevo_producto = Producto(
-            identificador_unico=identificador,
-            nombre=nombre,
-            precio=precio,
-            estado="inventario"
-        )
-        db.session.add(nuevo_producto)
-        productos_creados.append(nuevo_producto)
+        productos_creados = []
+        for _ in range(cantidad):
+            for _ in range(10):  
+                identificador = generar_identificador()
+                existe = Producto.query.filter_by(identificador_unico=identificador).first()
+                if not existe:
+                    break
+            else:
+                return jsonify({'error': 'No se pudo generar un identificador único'}), 500
 
-    try:
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        return jsonify({'error': 'Error de integridad, puede que el identificador ya exista'}), 500
+            nuevo_producto = Producto(
+                identificador_unico=identificador,
+                nombre=nombre,
+                precio=precio,
+                estado="inventario"
+            )
+            db.session.add(nuevo_producto)
+            productos_creados.append(nuevo_producto)
 
-    return jsonify({
-        'mensaje': f'{cantidad} producto(s) registrado(s)',
-        'productos': [p.identificador_unico for p in productos_creados]
-    }), 201
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            return jsonify({'error': 'Error de integridad, puede que el identificador ya exista'}), 500
+
+        return jsonify({
+            'mensaje': f'{cantidad} producto(s) registrado(s)',
+            'productos': [p.identificador_unico for p in productos_creados]
+        }), 201
+
+    return handle_post()

@@ -18,7 +18,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-# 👇 Blueprints
 from routers.auth.registro import usuarios_bp
 from routers.auth.login import login_bp
 from routers.productos.registrar_producto import registrar_bp
@@ -32,8 +31,8 @@ from routers.ventas.crearVenta import crear_venta_bp
 from routers.ventas.ventaIdentificador import venta_identificador_bp
 from routers.ventas.ventasProductos import ventas_por_nombre_bp
 from routers.ventas.margenVentas import margen_ventas_bp
+from routers.productos.verProductos import ver_todos_bp
 
-# 👇 Registro de rutas
 app.register_blueprint(usuarios_bp, url_prefix="/registro")
 app.register_blueprint(login_bp, url_prefix="/login")
 app.register_blueprint(registrar_bp, url_prefix="/productos")
@@ -43,10 +42,12 @@ app.register_blueprint(eliminar_bp, url_prefix="/productos")
 app.register_blueprint(buscar_nombre_bp, url_prefix="/productos")
 app.register_blueprint(total_inventario_bp, url_prefix="/productos")
 app.register_blueprint(cambio_estado_bp, url_prefix="/productos")
+app.register_blueprint(ver_todos_bp, url_prefix="/productos")
 app.register_blueprint(crear_venta_bp, url_prefix="/ventas")
 app.register_blueprint(venta_identificador_bp, url_prefix="/ventas")
 app.register_blueprint(ventas_por_nombre_bp, url_prefix="/ventas")
 app.register_blueprint(margen_ventas_bp, url_prefix="/ventas")
+
 
 if __name__ == "__main__":
     with app.app_context():

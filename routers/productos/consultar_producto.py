@@ -1,12 +1,17 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, request, jsonify
 from models.Producto import Producto
-from utils.auth_utils import token_required  
+from utils.auth_utils import token_required
+from flask_cors import cross_origin
 
 consultar_bp = Blueprint('consultar_producto', __name__)
 
-@consultar_bp.route('/consultar_producto/<identificador>', methods=['GET'])
-@token_required  
+@consultar_bp.route('/consultar_producto/<identificador>', methods=['GET', 'OPTIONS'], strict_slashes=False)
+@cross_origin(origin='http://localhost:3000', supports_credentials=True)
+@token_required
 def consultar_producto(identificador):
+    if request.method == 'OPTIONS':
+        return '', 200
+
     producto = Producto.query.filter_by(identificador_unico=identificador).first()
 
     if not producto:

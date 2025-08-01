@@ -1,22 +1,30 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from models.Producto import Producto
 from models.Producto import db  
 from utils.auth_utils import token_required
+from flask_cors import cross_origin
 
 eliminar_bp = Blueprint('eliminar_producto', __name__)
 
-@eliminar_bp.route('/eliminar_producto/<identificador>', methods=['DELETE'])
-@token_required  
+@eliminar_bp.route('/eliminar_producto/<identificador>', methods=['DELETE', 'OPTIONS'], strict_slashes=False)
+@cross_origin(origin='http://localhost:3000', supports_credentials=True)
 def eliminar_producto(identificador):
-    producto = Producto.query.filter_by(identificador_unico=identificador).first()
+    if request.method == 'OPTIONS':
+        return '', 200
 
-    if not producto:
-        return jsonify({'error': 'Producto no encontrado'}), 404
+    @token_required
+    def handle_delete():
+        producto = Producto.query.filter_by(identificador_unico=identificador).first()
 
-    if producto.estado != 'inventario':
-        return jsonify({'error': 'Solo se pueden eliminar productos en estado de inventario'}), 403
+        if not producto:
+            return jsonify({'error': 'Producto no encontrado'}), 404
 
-    db.session.delete(producto)
-    db.session.commit()
+        if producto.estado != 'inventario':
+            return jsonify({'error': 'Solo se pueden eliminar productos en estado de inventario'}), 403
 
-    return jsonify({'mensaje': f'Producto con identificador {identificador} eliminado correctamente'}), 200
+        db.session.delete(producto)
+        db.session.commit()
+
+        return jsonify({'mensaje': f'Producto con identificador {identificador} eliminado correctamente'}), 200
+
+    return handle_delete()
