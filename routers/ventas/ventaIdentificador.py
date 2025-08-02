@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify
 from models.Venta import Venta
 from utils.auth_utils import token_required
+from flask_cors import cross_origin
 
 venta_identificador_bp = Blueprint('venta_identificador', __name__)
 
-@venta_identificador_bp.route('/<identificador_unico>', methods=['GET'])
+@venta_identificador_bp.route('/<identificador_unico>', methods=['GET', 'OPTIONS'], strict_slashes=False)
+@cross_origin(origin='http://localhost:3000', supports_credentials=True)
 @token_required
 def obtener_venta_por_id(identificador_unico):
     try:

@@ -1,19 +1,23 @@
 from flask import Blueprint, jsonify
 from models.Venta import Venta
 from utils.auth_utils import token_required
+from flask_cors import cross_origin
 
 ventas_por_nombre_bp = Blueprint('ventas_por_nombre', __name__)
 
-@ventas_por_nombre_bp.route('/producto/<nombre_producto>', methods=['GET'])
+@ventas_por_nombre_bp.route('/producto/<nombre_producto>', methods=['GET', 'OPTIONS'], strict_slashes=False)
+@cross_origin(origin='http://localhost:3000', supports_credentials=True)
 @token_required
 def obtener_ventas_por_nombre(nombre_producto):
-    ventas = Venta.query.filter_by(nombre_producto=nombre_producto).all()
+    nombre_limpio = nombre_producto.strip()  
+
+    ventas = Venta.query.filter_by(nombre_producto=nombre_limpio).all()
 
     if not ventas:
-        return jsonify({'error': f'No se encontraron ventas para \"{nombre_producto}\"'}), 404
+        return jsonify({'error': f'No se encontraron ventas para "{nombre_limpio}"'}), 404
 
     return jsonify({
-        'nombre_producto': nombre_producto,
+        'nombre_producto': nombre_limpio,
         'total_ventas': len(ventas),
         'ventas': [
             {

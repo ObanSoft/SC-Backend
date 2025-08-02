@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify
 from models.Producto import Producto
 from utils.auth_utils import token_required
+from flask_cors import cross_origin
 
 ver_todos_bp = Blueprint('ver_todos', __name__)
 
-@ver_todos_bp.route('/ver', methods=['GET'])
+@ver_todos_bp.route('/ver', methods=['GET' , 'OPTIONS'], strict_slashes=False)
+@cross_origin(origin='http://localhost:3000', supports_credentials=True)
 @token_required
 def ver_todos_los_productos():
     productos = Producto.query.filter_by(estado='inventario').all()  

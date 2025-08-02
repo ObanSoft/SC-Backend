@@ -3,10 +3,12 @@ from models import db
 from models.Producto import Producto
 from models.Venta import Venta
 from utils.auth_utils import token_required
+from flask_cors import cross_origin
 
 crear_venta_bp = Blueprint('crear_venta', __name__)
 
-@crear_venta_bp.route('/crearVenta', methods=['POST'])
+@crear_venta_bp.route('/crearVenta', methods=['POST' , 'OPTIONS'], strict_slashes=False)
+@cross_origin(origin='http://localhost:3000', supports_credentials=True)
 @token_required
 def crear_venta():
     data = request.get_json()
