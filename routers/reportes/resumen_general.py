@@ -13,10 +13,13 @@ resumen_bp = Blueprint('resumen_general', __name__)
 @cross_origin(origin='http://localhost:3000', supports_credentials=True)
 @token_required
 def resumen_general():
+    
     total_vendidos = db.session.query(func.count()).select_from(Producto).filter_by(estado='vendido').scalar()
     total_inventario = db.session.query(func.count()).select_from(Producto).filter_by(estado='inventario').scalar()
 
-    valor_inventario = db.session.query(func.sum(CostoProducto.precio_compra)).scalar() or 0
+    valor_inventario = db.session.query(func.sum(Producto.precio))\
+    .filter(Producto.estado == 'inventario')\
+    .scalar() or 0
     total_ventas = db.session.query(func.sum(Venta.precio)).scalar() or 0
 
     return jsonify({

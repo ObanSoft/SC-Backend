@@ -41,6 +41,8 @@ from routers.reportes.producto_detalle import detalle_bp
 from routers.reportes.resumen_general import resumen_bp
 from routers.reportes.top5_mas_vendidos import top5_bp
 from routers.reportes.ventas_por_mes import ventas_mes_bp
+from routers.reportes.exportar_ventas import exportar_excel_ventas_bp
+from routers.reportes.exportar_inventario import exportar_inventario_bp
 
 app.register_blueprint(usuarios_bp, url_prefix="/registro")
 app.register_blueprint(login_bp, url_prefix="/login")
@@ -65,6 +67,8 @@ app.register_blueprint(detalle_bp, url_prefix="/reportes")
 app.register_blueprint(resumen_bp, url_prefix="/reportes")
 app.register_blueprint(top5_bp, url_prefix="/reportes")
 app.register_blueprint(ventas_mes_bp, url_prefix="/reportes")
+app.register_blueprint(exportar_excel_ventas_bp, url_prefix="/reportes")
+app.register_blueprint(exportar_inventario_bp, url_prefix="/reportes")
 
 if __name__ == "__main__":
     with app.app_context():
