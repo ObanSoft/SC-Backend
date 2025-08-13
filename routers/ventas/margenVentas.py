@@ -11,7 +11,9 @@ margen_ventas_bp = Blueprint('margen_ventas', __name__)
 @cross_origin(origin='http://localhost:3000', supports_credentials=True)
 @token_required
 def calcular_margen_ventas():
-    total_ventas = db.session.query(func.sum(Venta.precio)).scalar()
+    total_ventas = db.session.query(func.sum(Venta.precio))\
+        .filter(Venta.tipo_venta == 'Individual')\
+        .scalar()
 
     if total_ventas is None:
         total_ventas = 0.0

@@ -5,7 +5,7 @@ from flask_cors import cross_origin
 
 ventas_por_nombre_bp = Blueprint('ventas_por_nombre', __name__)
 
-@ventas_por_nombre_bp.route('/producto/<nombre_producto>', methods=['GET', 'OPTIONS'], strict_slashes=False)
+@ventas_por_nombre_bp.route('/producto/nombre/<nombre_producto>', methods=['GET', 'OPTIONS'], strict_slashes=False)
 @cross_origin(origin='http://localhost:3000', supports_credentials=True)
 @token_required
 def obtener_ventas_por_nombre(nombre_producto):
@@ -23,7 +23,9 @@ def obtener_ventas_por_nombre(nombre_producto):
             {
                 'identificador_unico': v.identificador_unico,
                 'precio': float(v.precio),
-                'fecha_venta': v.fecha_venta.strftime('%Y-%m-%d %H:%M:%S')
+                'fecha_venta': v.fecha_venta.strftime('%Y-%m-%d %H:%M:%S'),
+                'tipo_venta': v.tipo_venta,
+                'vendido_por': v.vendido_por,
             }
             for v in ventas
         ]

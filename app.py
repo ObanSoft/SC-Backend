@@ -29,12 +29,15 @@ from routers.productos.total_inventario import total_inventario_bp
 from routers.productos.verCantidadProducto import cantidad_bp
 from routers.productos.cambioEstado import cambio_estado_bp
 from routers.productos.verProductos import ver_todos_bp
+from routers.productos.disolverCombo import disolver_combo_bp
 
 from routers.ventas.crearVenta import crear_venta_bp
 from routers.ventas.verVentas import ver_ventas_bp         
-from routers.ventas.ventaIdentificador import venta_identificador_bp  
 from routers.ventas.ventasProductos import ventas_por_nombre_bp
+from routers.ventas.ventaIdentificador import venta_identificador_bp  
 from routers.ventas.margenVentas import margen_ventas_bp
+from routers.ventas.crearVentaCombo import crear_venta_combo_bp
+from routers.ventas.margen_combos import margen_combos_bp
 
 from routers.reportes.margen_por_producto import margen_bp
 from routers.reportes.producto_detalle import detalle_bp
@@ -43,6 +46,7 @@ from routers.reportes.top5_mas_vendidos import top5_bp
 from routers.reportes.ventas_por_mes import ventas_mes_bp
 from routers.reportes.exportar_ventas import exportar_excel_ventas_bp
 from routers.reportes.exportar_inventario import exportar_inventario_bp
+from routers.reportes.exportar_combos import exportar_excel_combos_bp
 
 app.register_blueprint(usuarios_bp, url_prefix="/registro")
 app.register_blueprint(login_bp, url_prefix="/login")
@@ -55,12 +59,16 @@ app.register_blueprint(buscar_nombre_bp, url_prefix="/productos")
 app.register_blueprint(total_inventario_bp, url_prefix="/productos")
 app.register_blueprint(cambio_estado_bp, url_prefix="/productos")
 app.register_blueprint(ver_todos_bp, url_prefix="/productos")
+app.register_blueprint(disolver_combo_bp, url_prefix="/productos")
 
 app.register_blueprint(crear_venta_bp, url_prefix="/ventas")
 app.register_blueprint(ver_ventas_bp, url_prefix="/ventas")              
-app.register_blueprint(venta_identificador_bp, url_prefix="/ventas")     
 app.register_blueprint(ventas_por_nombre_bp, url_prefix="/ventas")
+app.register_blueprint(venta_identificador_bp, url_prefix="/ventas")     
 app.register_blueprint(margen_ventas_bp, url_prefix="/ventas")
+app.register_blueprint(crear_venta_combo_bp, url_prefix="/ventas")
+app.register_blueprint(margen_combos_bp, url_prefix="/ventas")
+
 
 app.register_blueprint(margen_bp, url_prefix="/reportes")
 app.register_blueprint(detalle_bp, url_prefix="/reportes")
@@ -69,6 +77,8 @@ app.register_blueprint(top5_bp, url_prefix="/reportes")
 app.register_blueprint(ventas_mes_bp, url_prefix="/reportes")
 app.register_blueprint(exportar_excel_ventas_bp, url_prefix="/reportes")
 app.register_blueprint(exportar_inventario_bp, url_prefix="/reportes")
+app.register_blueprint(exportar_excel_combos_bp, url_prefix="/reportes")
+
 
 if __name__ == "__main__":
     with app.app_context():

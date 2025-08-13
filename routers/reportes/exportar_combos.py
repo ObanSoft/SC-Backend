@@ -7,20 +7,21 @@ from models.Venta import Venta
 from utils.auth_utils import token_required
 from flask_cors import cross_origin
 
-exportar_excel_ventas_bp = Blueprint('exportar_excel_ventas', __name__)
+exportar_excel_combos_bp = Blueprint('exportar_excel_combos', __name__)
 
-@exportar_excel_ventas_bp.route('/exportar_ventas', methods=['GET', 'OPTIONS'], strict_slashes=False)
+@exportar_excel_combos_bp.route('/exportar_combos', methods=['GET', 'OPTIONS'], strict_slashes=False)
 @cross_origin(origin='http://localhost:3000', supports_credentials=True)
 @token_required
-def exportar_excel_ventas():
+def exportar_excel_combos():
     if request.method == 'OPTIONS':
         return '', 200
 
-    ventas = Venta.query.filter_by(tipo_venta='Individual').all()
+    # 🔹 Filtrar solo ventas tipo Combo
+    ventas = Venta.query.filter_by(tipo_venta='Combo').all()
 
     wb = Workbook()
     ws = wb.active
-    ws.title = "Reporte de Ventas Individuales"
+    ws.title = "Reporte de Combos"
 
     encabezados = [
         'ID', 
@@ -44,6 +45,7 @@ def exportar_excel_ventas():
             venta.metodo_pago or ''
         ])
 
+    # Estilos
     bold_font = Font(bold=True, color='FFFFFF')
     fill_color = PatternFill(start_color='E91E63', end_color='E91E63', fill_type='solid')
     center_align = Alignment(horizontal='center', vertical='center')
@@ -64,7 +66,7 @@ def exportar_excel_ventas():
         for idx, cell in enumerate(row, start=1):
             cell.border = border
             cell.alignment = Alignment(horizontal='left')
-            if idx == 4:  
+            if idx == 4:
                 cell.number_format = '"$"#,##0.00'
 
     for col in ws.columns:
@@ -76,7 +78,7 @@ def exportar_excel_ventas():
         ws.column_dimensions[col_letter].width = max_length + 2
 
     table_range = f"A1:G{ws.max_row}"
-    tabla = Table(displayName="TablaVentas", ref=table_range)
+    tabla = Table(displayName="TablaCombos", ref=table_range)
     estilo_tabla = TableStyleInfo(
         name="TableStyleMedium10",
         showFirstColumn=False,
@@ -94,6 +96,6 @@ def exportar_excel_ventas():
     return send_file(
         output,
         as_attachment=True,
-        download_name='reporte_ventas_individuales.xlsx',
+        download_name='reporte_combos.xlsx',
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
