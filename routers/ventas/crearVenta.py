@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-from models import db
-from models.Producto import Producto
-from models.Venta import Venta
+from app.models import db
+from app.models.Venta import Venta
+from app.models.Producto import Producto
 from utils.auth_utils import token_required
 from flask_cors import cross_origin
 

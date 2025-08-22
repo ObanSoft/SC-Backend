@@ -1,4 +1,4 @@
-from . import db
+from app.models import db
 from datetime import datetime
 
 class CostoProducto(db.Model):

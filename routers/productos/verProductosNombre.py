@@ -1,7 +1,7 @@
-from flask import Blueprint, request, jsonify
-from models.Producto import Producto
-from utils.auth_utils import token_required
+from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
+from utils.auth_utils import token_required
+from services.productos.servicioBuscarNombre import buscar_productos_por_nombre_servicio
 
 buscar_nombre_bp = Blueprint('buscar_productos', __name__)
 
@@ -13,30 +13,5 @@ def buscar_productos_por_nombre():
         return '', 200
 
     nombre = request.args.get('nombre')
-
-    if not nombre:
-        return jsonify({'error': 'El parámetro "nombre" es requerido'}), 400
-
-    productos = Producto.query.filter(
-        Producto.nombre.ilike(f'%{nombre}%'),
-        Producto.estado == 'Inventario'
-    ).all()
-
-    if not productos:
-        return jsonify({'mensaje': 'No se encontraron productos con ese nombre'}), 404
-
-    resultados = []
-    for p in productos:
-        resultados.append({
-            'id': p.id,
-            'identificador_unico': p.identificador_unico,
-            'nombre': p.nombre,
-            'precio': str(p.precio),
-            'estado': p.estado,
-            'fecha_creacion': p.fecha_creacion.strftime('%Y-%m-%d %H:%M:%S') if p.fecha_creacion else None
-        })
-
-    return jsonify({
-        'cantidad': len(resultados),
-        'productos': resultados
-    }), 200
+    response, status = buscar_productos_por_nombre_servicio(nombre)
+    return jsonify(response), status

@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify
-from models.Venta import Venta
+from app.models import db
+from app.models.Venta import Venta
 from utils.auth_utils import token_required
 from sqlalchemy import func
-from models import db
 from flask_cors import cross_origin
 
 margen_combos_bp = Blueprint('margen_combos', __name__)

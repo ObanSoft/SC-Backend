@@ -1,8 +1,7 @@
-from flask import Blueprint, jsonify, request
-from models.Producto import Producto, db
-from sqlalchemy import func
-from utils.auth_utils import token_required
+from flask import Blueprint, jsonify
 from flask_cors import cross_origin
+from utils.auth_utils import token_required
+from services.productos.servicioCantidadProductos import cantidad_productos_service
 
 cantidad_bp = Blueprint('cantidad_productos', __name__)
 
@@ -13,23 +12,5 @@ def cantidad_productos_en_inventario():
     if request.method == 'OPTIONS':
         return '', 200
 
-    resultados = (
-        db.session.query(
-            Producto.nombre,
-            Producto.estado,
-            func.count().label('cantidad')
-        )
-        .filter(Producto.estado == 'inventario')  
-        .group_by(Producto.nombre, Producto.estado)
-        .all()
-    )
-
-    productos = [
-        {'nombre': nombre, 'estado': estado, 'cantidad': cantidad}
-        for nombre, estado, cantidad in resultados
-    ]
-
-    return jsonify({
-        'total_tipos_producto': len(productos),
-        'productos': productos
-    }), 200
+    response, status = cantidad_productos_service()
+    return jsonify(response), status

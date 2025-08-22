@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
-from models.Venta import Venta
+from app.models import db
+from app.models.Venta import Venta
 from utils.auth_utils import token_required
 from flask_cors import cross_origin
 
