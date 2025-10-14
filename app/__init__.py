@@ -2,7 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from config import Config
 from app.models import db
-from routers import register_blueprints
+from rutas import register_blueprints
 
 
 def create_app():

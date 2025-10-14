@@ -2,7 +2,7 @@ from app.models import db
 from datetime import datetime
 
 class CostoProducto(db.Model):
-    __tablename__ = 'costos_producto'
+    __tablename__ = 'costosProducto'
 
     id = db.Column(db.Integer, primary_key=True)
     identificador_producto = db.Column(db.String(36), nullable=False)  
