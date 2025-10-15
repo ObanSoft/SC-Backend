@@ -10,7 +10,7 @@ def create_app():
 
     if os.environ.get("RENDER") == "true": 
         app.config.from_object(ProductionConfig)
-        cors_origins = ["https://tu-frontend.netlify.app"]  
+        cors_origins = ["https://system-control.netlify.app"]  
     else:
         app.config.from_object(DevelopmentConfig)
         cors_origins = ["http://localhost:5173"] 
