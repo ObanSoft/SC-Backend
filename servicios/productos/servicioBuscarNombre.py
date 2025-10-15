@@ -7,7 +7,7 @@ def buscar_productos_por_nombre_servicio(nombre):
     try:
         productos = Producto.query.filter(
             Producto.nombre.ilike(f'%{nombre}%'),
-            Producto.estado == 'Inventario'
+            Producto.estado == 'inventario'
         ).all()
 
         if not productos:
