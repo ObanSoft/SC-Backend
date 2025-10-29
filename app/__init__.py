@@ -18,7 +18,7 @@ def create_app():
         cors_origins = ["https://system-control.netlify.app"]
     else:
         app.config.from_object(DevelopmentConfig)
-        cors_origins = ["http://localhost:5432"]
+        cors_origins = ["http://localhost:5173"]
 
     CORS(app, resources={r"/*": {"origins": cors_origins}}, supports_credentials=True)
 

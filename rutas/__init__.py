@@ -27,6 +27,7 @@ from .reportes.ventasMes import ventas_mes_bp
 from .reportes.exportarVentas import exportar_excel_ventas_bp
 from .reportes.exportarInventario import exportar_inventario_bp
 from .reportes.exportarCombos import exportar_excel_combos_bp
+from .reportes.margenTotal import margen_total_bp
 
 
 def register_blueprints(app):
@@ -57,6 +58,7 @@ def register_blueprints(app):
         (exportar_excel_ventas_bp, "/reportes"),
         (exportar_inventario_bp, "/reportes"),
         (exportar_excel_combos_bp, "/reportes"),
+        (margen_total_bp, "/reportes"),
     ]
 
     for bp, prefix in blueprints:
