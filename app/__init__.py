@@ -11,7 +11,7 @@ load_dotenv()
 def create_app():
     app = Flask(__name__)
 
-    environment = os.getenv("ENV", "local")
+    environment = os.getenv("ENV", "production")
 
     if environment == "production":
         app.config.from_object(ProductionConfig)
